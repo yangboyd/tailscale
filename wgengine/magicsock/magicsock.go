@@ -1119,7 +1119,8 @@ func (c *Conn) determineEndpoints(ctx context.Context) ([]tailcfg.Endpoint, erro
 		// port mapping on their router to the same explicit
 		// port that tailscaled is running with. Worst case
 		// it's an invalid candidate mapping.
-		if port := c.port.Load(); nr.MappingVariesByDestIP.EqualBool(true) && port != 0 {
+		// Also needed for routers with MappingVariesByDestIP false
+		if port := c.port.Load(); port != 0 {
 			if ip, _, err := net.SplitHostPort(nr.GlobalV4); err == nil {
 				addAddr(ipp(net.JoinHostPort(ip, strconv.Itoa(int(port)))), tailcfg.EndpointSTUN4LocalPort)
 			}
